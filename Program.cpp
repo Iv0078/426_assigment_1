@@ -54,7 +54,7 @@ void Program::Update(float dt)
             t.join();
         }
     }
-    std::cout << threads.size() << std::endl;
+   // std::cout << threads.size() << std::endl;
     //threads.clear();
     for (Ball* id : balls) {
         threads.push_back(std::thread(&Program::resolveCollision,this,id)); 
