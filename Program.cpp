@@ -7,8 +7,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <thread>
 #include <mutex>
-
 #include <iostream>
+#include <tbb/tbb.h>
 
 std::mutex ball_mutex;
 
@@ -43,28 +43,17 @@ void Program::Init()
 
 void Program::Update(float dt)
 {
-    threads.clear(); // used to free up unused  space
-    //std::cout << threads.size() << std::endl;
-   
-    for (Ball* ball : balls) {
-        threads.push_back(std::thread(&Ball::Move,ball,dt, this->width, this->height));
-    }
-    for (auto& t : threads) {
-        if (t.joinable()) {
-            t.join();
-        }
-    }
-   // std::cout << threads.size() << std::endl;
-    //threads.clear();
-    for (Ball* id : balls) {
-        threads.push_back(std::thread(&Program::resolveCollision,this,id)); 
-    }
-    for (auto& t : threads) {
-        if (t.joinable()) {
-            t.join();
-        }
-    }
-    //std::cout << threads.size() << std::endl;
+    // gives the maximum number of threads 
+    //std::cout << oneapi::tbb::info::default_concurrency() << std::endl;
+    tbb::parallel_for(tbb::blocked_range<int>(0, balls.size()),
+        [&](tbb::blocked_range<int> r)
+        {
+            for (int i = r.begin(); i < r.end(); i++) {
+                balls.at(i)->Move(dt, width, height);
+                resolveCollision(balls.at(i));
+            }
+        });
+
 }
 
 
@@ -83,23 +72,23 @@ bool Program::CheckCollision(Ball& one, Ball& two)
 void Program::resolveCollision(Ball* ball_one){
   
     bool collision = false;
-    for (Ball* ball_two : balls) {
-        if (!(ball_one == ball_two)) {
-            collision = this->CheckCollision(*ball_one, *ball_two);
-        }
-        
-        if (collision) {
-            ball_mutex.lock();
-            (*ball_one).setCollision(true);
-            (*ball_two).setCollision(true);
-            ball_mutex.unlock();
-            break;
-        }
-    }
+    tbb::parallel_for(tbb::blocked_range<int>(0, balls.size()),
+        [&](tbb::blocked_range<int> r)
+        {
+            for (Ball* ball_two : balls) {
+                if (!(ball_one == ball_two)) {
+                    collision = this->CheckCollision(*ball_one, *ball_two);
+                }
+                if (collision) {
+                    (*ball_one).setCollision(true);
+                    break;
+                }
+            }
+        });
     if ((*ball_one).getCollision()) {
         (*ball_one).resolveCollision();
     }
-
+    
 }
 
 

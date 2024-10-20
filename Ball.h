@@ -6,22 +6,6 @@
 
 class Ball
 {
-private:
-
-	glm::vec2 position,size,velocity;
-	glm::vec3 colour;
-	float rotation;
-	float  radius;
-	float gravity;
-	int weight;
-	int pixels;
-	bool stopped;
-	bool collision;
-
-	
-
-
-
 
 public:
 	Ball();
@@ -46,6 +30,18 @@ public:
 	void setCollision(const bool& collision_state);
 
 	
+private:
+
+	glm::vec2 position, size, velocity;
+	glm::vec3 colour;
+	float rotation;
+	float  radius;
+	float gravity;
+	int weight;
+	int pixels;
+	bool stopped;
+	bool collision;
+
 
 
 };

@@ -47,11 +47,15 @@ bool controlThread(std::vector<Ball*> ball_vector, const int& num_balls,
     // delta time variables
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+    int frames{ 0 };
+    float currentF{ 1.00f };
 
     while (!glfwWindowShouldClose(window))
     {
         // calculate delta time
         float currentFrame = glfwGetTime();
+      
+       
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         glfwPollEvents();
@@ -66,6 +70,15 @@ bool controlThread(std::vector<Ball*> ball_vector, const int& num_balls,
         program.Render();
 
         glfwSwapBuffers(window);
+
+
+        frames++;
+        if (currentFrame > currentF) {
+            currentF += 1.00f;
+            std::cout <<"Frame count: " << frames << std::endl;
+            frames = 0;
+        }
+
     }
 
     // delete loaded resources

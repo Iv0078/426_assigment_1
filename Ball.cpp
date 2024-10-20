@@ -74,11 +74,11 @@ void Ball::Draw(Renderer& renderer) {
 		 }
 		 else if (this->position.y + this->size.y >= window_height)
 		 {
-			 //this->velocity.y = -this->velocity.y;
-			 // this->position.y = window_height - this->size.y;
-			 this->velocity.y = 0;
+			 this->velocity.y = -this->velocity.y;
+			 this->position.y = window_height - this->size.y;
+			/* this->velocity.y = 0;
 			 this->velocity.x = 0;
-			 this->stopped = true;
+			 this->stopped = true;*/
 		 }
 			
 		 // gravity
