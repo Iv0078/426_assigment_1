@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "functions.h"
 #include <iostream>
+#include "ResourceManager.h"
 
 glm::vec2 position, size, velocity;
 glm::vec3 colour;
@@ -48,7 +49,8 @@ Ball::Ball( std::string ball_colour,int width,int height,float gravity):
 
 
 void Ball::Draw(Renderer& renderer) {
-	renderer.DrawRender( this->position, this->size, this->rotation, this->colour);
+	Texture texture = ResourceManager::GetTexture("circle");
+	renderer.DrawRender(texture, this->position, this->size, this->rotation, this->colour);
 }
 
  glm::vec2 Ball::Move(float dt, unsigned int window_width,unsigned int window_height) {

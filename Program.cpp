@@ -5,8 +5,6 @@
 #include<GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include <thread>
-#include <mutex>
 #include <iostream>
 #include <tbb/tbb.h>
 
@@ -34,10 +32,11 @@ void Program::Init()
     // configure shaders
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width),
         static_cast<float>(this->height), 0.0f, -1.0f, 1.0f);
-    ResourceManager::GetShader("ShaderFile").Use().SetInteger("", 0);
+    ResourceManager::GetShader("ShaderFile").Use().SetInteger("image", 0);
     ResourceManager::GetShader("ShaderFile").SetMatrix4("projection", projection);
-    // set render-specific controls
-    Rend = new Renderer(ResourceManager::GetShader("ShaderFile"));
+    
+    Rend = new Renderer(ResourceManager::GetShader("ShaderFile")); // set render-specific controls
+    ResourceManager::LoadTexture("circle.png", true, "circle");
 
 }
 
