@@ -29,7 +29,7 @@ void Renderer::DrawRender(Texture& texture,glm::vec2 position, glm::vec2 size, f
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
     this->shader.SetMatrix4("model", model);
-    this->shader.SetVector3f("spriteColor", color);
+    this->shader.SetVector3f("ballColor", color);
 
     glActiveTexture(GL_TEXTURE0);
     texture.Bind();
