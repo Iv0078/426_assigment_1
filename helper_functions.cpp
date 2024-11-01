@@ -56,7 +56,7 @@ glm::vec2 startingVelocity() {
 	int x_velocity{ (rand() % 100000) % 100 };
 	int y_velocity{(rand() % 100000)%100}; 
 	//std::cout << x_velocity << " " << y_velocity << std::endl;
-	return glm::vec2(x_velocity, -y_velocity);
+	return glm::vec2(3*x_velocity, -3*y_velocity);
 }
 
 

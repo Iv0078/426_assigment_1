@@ -45,44 +45,67 @@ bool controlThread(std::vector<Ball*> ball_vector, const int& num_balls,
   
 
     // delta time variables
+    int MAX_FPS{ 30 }; // raget fps
+    int loopIteratons{ 1 }; // required loop iterations to each a single frame
+    int currentIteration { 0 }; // current itteration
+
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+
     int frames{ 0 };
     float currentF{ 1.00f };
+    bool runUpdate{ false };
+
+
 
     while (!glfwWindowShouldClose(window))
     {
         // calculate delta time
         float currentFrame = glfwGetTime();
-        frames++;
+        currentIteration++;
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        if (currentFrame >= 1.00f && currentFrame <= 2.00f) { loopIteratons += 1;}
+        // at the end of 2nd second
+        if (currentF == 2 && currentF < currentFrame ) {
+            loopIteratons = (loopIteratons +2)/ MAX_FPS;
+            currentIteration = 0;
+        }
+        // updates a songle frame at n iterations
+        if (currentIteration >= loopIteratons && currentF > 2) {
+            frames++;
+            currentIteration = 0;
+            runUpdate = true;
+        }
+
         if (currentFrame > currentF) {
             currentF += 1.00f;
             std::cout << "Frame count: " << frames << " \t"<< "Time(in seconds): "<< glfwGetTime()<<std::endl;
             frames = 0;
         }
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        glfwPollEvents();
 
- 
-            
+       
+        
+
+        glfwPollEvents();
         // update state
-        program.Update(deltaTime);
+        if (runUpdate || currentF<=2) {
+            program.Update(deltaTime);
+            runUpdate = false;
+        }
+        
         // render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         program.Render();
-
         glfwSwapBuffers(window);
-
-
-       
 
     }
 
+
     // delete loaded resources
     ResourceManager::Clear();
-
     glfwTerminate();
 
 	return true;
