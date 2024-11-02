@@ -58,12 +58,13 @@ void Program::Update(float dt)
 
 bool Program::CheckCollision(Ball& one, Ball& two) 
 {
+    const float adjt{ 4.0f };
     // collision x-axis?
-    bool collisionX = one.getPosition().x + one.getSize().x >= two.getPosition().x &&
-        two.getPosition().x + two.getSize().x >= one.getPosition().x;
+    bool collisionX = one.getPosition().x + one.getSize().x - adjt >= two.getPosition().x &&
+        two.getPosition().x + two.getSize().x - adjt >= one.getPosition().x;
     // collision y-axis?
-    bool collisionY = one.getPosition().y + one.getSize().y >= two.getPosition().y &&
-        two.getPosition().y + two.getSize().y >= one.getPosition().y;
+    bool collisionY = one.getPosition().y + one.getSize().y - adjt >= two.getPosition().y &&
+        two.getPosition().y + two.getSize().y - adjt >= one.getPosition().y;
     // collision only if on both axes
     return collisionX && collisionY;
 }
@@ -71,6 +72,7 @@ bool Program::CheckCollision(Ball& one, Ball& two)
 void Program::resolveCollision(Ball* ball_one){
   
     bool collision = false;
+    int ballweight{ 5 };
     tbb::parallel_for(tbb::blocked_range<int>(0, balls.size()),
         [&](tbb::blocked_range<int> r)
         {
@@ -79,13 +81,14 @@ void Program::resolveCollision(Ball* ball_one){
                     collision = this->CheckCollision(*ball_one, *ball_two);
                 }
                 if (collision) {
+                    ballweight = (*ball_two).getBallWeight();
                     (*ball_one).setCollision(true);
                     break;
                 }
             }
         });
     if ((*ball_one).getCollision()) {
-        (*ball_one).resolveCollision();
+        (*ball_one).resolveCollision(ballweight);
     }
     
 }
@@ -99,3 +102,4 @@ void Program::Render()
     }
 
 }
+

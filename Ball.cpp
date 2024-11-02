@@ -3,14 +3,10 @@
 #include "functions.h"
 #include <iostream>
 #include "ResourceManager.h"
+#include <cmath>
+#include <mutex>
+std::mutex mu;
 
-glm::vec2 position, size, velocity;
-glm::vec3 colour;
-float rotation;
-int weight{};
-int pixels{};
-float   radius;
-bool    stopped;
 
 
 Ball::Ball()
@@ -54,7 +50,11 @@ void Ball::Draw(Renderer& renderer) {
 }
 
  glm::vec2 Ball::Move(float dt, unsigned int window_width,unsigned int window_height) {
-	 //std::cout << position.x << std::endl;
+	 /*std::cout << "x: " << position.x << std::endl;
+	 std::cout << "y: " << position.y << std::endl;
+	 std::cout << "x_vel: " << velocity.x << std::endl;
+	 std::cout << "yLvec: " << velocity.y << std::endl;
+	 velocity.x += 1;*/
 	 if (!this->stopped)
 	 {
 		 // move the ball
@@ -91,24 +91,25 @@ void Ball::Draw(Renderer& renderer) {
 	 return this->position;
  }
 
- glm::vec2  Ball::resolveCollision() {
-	 //std::cout << "collision" << std::endl;
+ glm::vec2  Ball::resolveCollision(const int& weight) {
 	 if (collision) {
-		 this->velocity.y = -this->velocity.y;
-		 this->velocity.x = -this->velocity.x;
-		 collision = false;
+		float ratio = 1 - 2*(this->weight - weight)/100;
+		this-> velocity.x = -ratio*this->velocity.x;
+		this->velocity.y = -ratio*this->velocity.y;
+		collision = false;
 	 }
-
 	 return this->position;
  }
 
+
+
 // resets the ball to original state with given position and velocity
- void  Ball::isStopped(glm::vec2 position, glm::vec2 velocity) {
-	 
- }
+ void  Ball::isStopped(glm::vec2 position, glm::vec2 velocity) {}
 
  int Ball::getBallWeight()const { return weight; }
  int Ball::getBallPixels()const { return pixels; }
+
+ float Ball::getRadius() const {return radius;}
 
  glm::vec2 Ball::getPosition() { return position;}
  glm::vec2 Ball::getVelocity() { return velocity; }

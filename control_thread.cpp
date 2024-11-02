@@ -70,10 +70,11 @@ bool controlThread(std::vector<Ball*> ball_vector, const int& num_balls,
         // at the end of 2nd second
         if (currentF == 2 && currentF < currentFrame ) {
             loopIteratons = (loopIteratons +2)/ MAX_FPS;
+            if (loopIteratons == 0) {loopIteratons = 1;}// in cases where max fps is higher than system can provide
             currentIteration = 0;
         }
         // updates a songle frame at n iterations
-        if (currentIteration >= loopIteratons && currentF > 2) {
+        if (currentIteration == loopIteratons && currentF > 2) {
             frames++;
             currentIteration = 0;
             runUpdate = true;

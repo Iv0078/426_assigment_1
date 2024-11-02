@@ -15,12 +15,14 @@ public:
 	virtual void Draw(Renderer& renderer);
 	// moves the ball
 	glm::vec2 Move(float dt, unsigned int window_width, unsigned int window_height);
-	glm::vec2  resolveCollision();
+	glm::vec2  resolveCollision(const int& weight);
 	void  isStopped(glm::vec2 position, glm::vec2 velocity);
 	
 
 	int getBallWeight()const;
 	int getBallPixels()const;
+	float getRadius() const;
+
 
 	glm::vec2 getPosition();
 	glm::vec2 getVelocity();
